@@ -1,0 +1,19 @@
+opam-version: "2.0"
+maintainer: "Jean-Christophe.Filliatre@cnrs.fr"
+authors: "Jean-Christophe Filliâtre"
+synopsis: "A library for small multisets"
+description: "Implements small multisets using bitmaps."
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/backtracking/mset"
+doc: "https://backtracking.github.io/mset"
+bug-reports: "https://github.com/backtracking/mset/issues"
+depends: [
+  "ocaml" {>= "4.04"}
+  "dune" {>= "2.0.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
+]
+dev-repo: "git+https://github.com/backtracking/mset.git"

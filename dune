@@ -1,0 +1,9 @@
+(library
+ (public_name mset)
+ (name mset)
+ (modules mset))
+
+(test
+ (name test)
+ (modules test)
+ (libraries mset))
