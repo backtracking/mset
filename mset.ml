@@ -302,7 +302,11 @@ module Make(X: UNIVERSE) = struct
 
 end
 
-module Chars = Make(Char)
+module Chars = Make(struct
+  type t = char
+  let equal (x: char) (y: char) = x == y
+  let hash: t -> int = Hashtbl.hash
+end)
 let chars = Chars.create
 
 let default_filter = function
