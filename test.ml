@@ -3,6 +3,10 @@ open Mset
 let [@inline always] must_fail f x =
   try ignore (f x); assert false with Invalid_argument _ -> ()
 
+let string_fold_right f s acc =
+  let rec fold i acc = if i < 0 then acc else fold (i-1) (f s.[i] acc) in
+  fold (String.length s - 1) acc
+
 let () =
   let module M = (val chars ['a', 3; 'b', 1; 'c', 2]) in
   let open M in
@@ -54,7 +58,7 @@ let () =
   let n = fold_sub (fun _ _ n -> n+1) full 0 in
   assert (Int64.of_int n = Internals.number_of_multisets);
   (* comparison *)
-  let of_string s = String.fold_right add1 s empty in
+  let of_string s = string_fold_right add1 s empty in
   let cmp x y = compare (of_string x) (of_string y) in
   assert (cmp "aab" "aab" = 0);
   assert (cmp "aab" "ac" < 0);
@@ -81,7 +85,7 @@ let () =
 let () =
   let module M = (val chars ['a', 2; 'b', 2; 'c', 2; 'd', 2; 'e', 2]) in
   let open M in
-  let of_string s = String.fold_right add1 s empty in
+  let of_string s = string_fold_right add1 s empty in
   let cmp x y = compare (of_string x) (of_string y) in
   assert (cmp "aab" "ac" < 0);
   assert (cmp "abbdd" "abbce" < 0);
