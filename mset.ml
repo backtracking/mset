@@ -211,10 +211,35 @@ module Make(X: UNIVERSE) = struct
           | (x, _) :: u -> count (n * (occ_ x ms + 1)) u in
         count 1 universe
 
-      let inclusion ms1 ms2 =
+      (* sound but inefficient inclusion test;
+         see below for a better solution *)
+      let _inclusion ms1 ms2 =
         ms1 <= ms2 && (* fast check *)
         let check (x, _) = occ_ x ms1 <= occ_ x ms2 in
         List.for_all check universe
+
+      (* To check inclusion, we'd like to make a subtraction,
+         element-wise, and check for the absence of overflow.
+
+         But the carry, if any, would flow into the next element slot.
+         So we mask out odd (resp. even) elements and do the
+         subtraction for even (resp. odd) elements only.
+
+         Suggested by Nathanaëlle Courant and Guillaume Melquiond. *)
+      let _, even_mask, odd_mask =
+        List.fold_left (fun (even, emask, omask) (x,_) ->
+          let ofs,_,mask = H.find slot x in
+          let mask = mask lsl ofs in
+          if even then
+            false, emask lor mask, omask
+          else
+            true , emask, omask lor mask
+        ) (true, 0, 0) universe
+
+      let inclusion ms1 ms2 =
+        ms1 <= ms2 && (* handles most significant element *)
+        (ms2 land even_mask - ms1 land even_mask) land  odd_mask = 0 &&
+        (ms2 land  odd_mask - ms1 land  odd_mask) land even_mask = 0
 
       let diff ms2 ms1 =
         if inclusion ms1 ms2 then ms2 - ms1 else invalid_arg "diff"

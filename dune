@@ -7,3 +7,9 @@
  (name test)
  (modules test)
  (libraries mset))
+
+(executable
+ (name bench)
+ (modules bench)
+ (promote (until-clean))
+ (libraries unix mset))
