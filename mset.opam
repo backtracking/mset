@@ -10,6 +10,7 @@ bug-reports: "https://github.com/backtracking/mset/issues"
 depends: [
   "ocaml" {>= "4.04"}
   "dune" {>= "2.0.0"}
+  "odoc" {with-doc}
 ]
 build: [
   ["dune" "subst"] {dev}
