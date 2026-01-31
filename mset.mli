@@ -32,11 +32,13 @@ v}
     The universe (i.e. the elements that can be stored in the multiset
     and, for each, its maximal multiplicity) has to be provided
     upfront. Functions over multisets fail if they are given elements
-    not belonging to the universe, or if the capacity is exceeded.
+    not belonging to the universe, or if the capacity of an element is
+    exceeded.
 *)
 
 module type S = sig
   type elt
+    (** the type of elements *)
 
   type t
     (** The type of multisets. Immutable.  Polymorphic equality,
@@ -192,12 +194,14 @@ module type S = sig
   end
 
 end
+(** Signature of the multiset data type *)
 
 module type UNIVERSE = sig
   type t
   val hash: t -> int
   val equal: t -> t -> bool
 end
+(** The type for the elements *)
 
 module Make(X: UNIVERSE) : sig
   val create: (X.t * int) list -> (module S with type elt = X.t)
@@ -205,6 +209,8 @@ module Make(X: UNIVERSE) : sig
         Raises [Invalid_argument] if the total capacity is too large to
         fit inside the bits of a single integer. *)
 end
+(** Functor building an implementation of the multiset structure
+    given an element type. *)
 
 val chars: (char * int) list -> (module S with type elt = char)
   (** Returns a multiset implementation for a universe of characters. *)

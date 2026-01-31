@@ -353,9 +353,9 @@ let of_string ?(filter=default_filter) s =
    https://fr.wikipedia.org/wiki/Fr%C3%A9quence_d%27apparition_des_lettres *)
 
 let from_frequencies fl =
-  let r = if Sys.word_size = 64 then 0.48 else 0.134 in
+  let m, r = if Sys.word_size = 64 then 2, 1.2 else 1, 0.5 in
   let approx (c, f) =
-    let k = max 1 (int_of_float (ceil (r *. f))) in
+    let k = max m (int_of_float (ceil (r *. log f))) in
     c, 1 lsl k - 1 in
   List.map approx fl
 

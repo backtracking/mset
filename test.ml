@@ -159,8 +159,3 @@ let () =
   assert (occ 'b' ms = 1);
   assert (occ 'a' ms = max_int);
   ()
-
-(* let () = *)
-(*   let open Format in *)
-(*   printf "FR = %a@." (Mset.FR.print_nat pp_print_char) Mset.FR.full; *)
-(*   printf "EN = %a@." (Mset.EN.print_nat pp_print_char) Mset.EN.full *)
